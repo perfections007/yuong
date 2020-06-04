@@ -1,0 +1,116 @@
+server:
+  port: 7000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always   
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: smartent-security
+  session:
+    store-type: redis  
+  datasource:
+    druid: 
+      url: jdbc:mysql://linux01:3306/oauth-center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+      username: root
+      password: 123456
+      driver-class-name:  com.mysql.jdbc.Driver
+################### mysq end ##########################
+  redis:
+################### redis 单机版 start ########################## 
+    host: linux01
+    port: 6379
+    timeout: 3000
+    database: 0
+
+
+  
+
+security:
+  oauth2:
+    token:
+      store:
+        type: redis
+
+chujiang:
+  http_urls:  /oauth/user/token , /oauth/client/token , /login  ,  /user/login ,/oauth/authorize , /doc.html ,/user/logout ,/document.html
+  oauth_urls: /oauth/user/token , /oauth/client/token  ,/oauth/authorize ,/user/logout ,/document.html
+  swagger:
+    name: "helloworld"
+    version: 1.0
+    title: “这是一个测试数据”
+    desc: “测试用”
+    basePackage: "cn.chujiang"
+    email: "xxxx.qq.com"
+    defaultParams[0]:
+      name: 'Authorization'
+      desc: '令牌'
+      model: 'String'
+      type: 'header'
+      required: 'false'
+    defaultParams[1]:
+      name: 'client_id'
+      desc: '应用ID'
+      model: 'String'
+      type: 'header'
+      required: 'false'
+    defaultParams[2]:
+      name: 'client_secret'
+      desc: '应用密钥'
+      model: 'String'
+      type: 'header'
+      required: 'false'
+      
+#设置最大容错超时时间
+hystrix:
+  metrics:
+    enabled: true
+    polling-interval-ms: 60000
+
+##feign参数优化
+feign:
+   compression:
+     request:
+       enabled: true
+       min-request-size: 2048
+     response:
+       enabled: true                    
+
+ 
+            
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone:  http://linux01:8888/eureka 
+    registry-fetch-interval-seconds: 3  
+    instance-info-replication-interval-seconds: 3  
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+    lease-renewal-interval-in-seconds: 5  #每隔几秒告诉eureka服务器我还存活，用于心跳检测
+    lease-expiration-duration-in-seconds: 10 #如果心跳检测一直没有发送，10秒后会从eureka服务器中将此服务剔除
+    #注册实例文档
+    status-page-url: http://${docker.ipAddress}:${server.port}/auth/doc.html # 固定端口
+    
+logging:
+  level:
+    root: INFO
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+#    com.neusoft: DEBUG     
+#    com.netflix: DEBUG                    #用于心跳检测输出的日志
+    
+
+
+
+
+  
+ 

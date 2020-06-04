@@ -1,0 +1,27 @@
+server:
+ port: 8010
+
+spring:
+ application:
+  name: config-server
+ cloud:
+  config:
+   server:
+    git:
+     uri: https://gitee.com/nierwaxiu/SpringcloudSamplesConfig.git
+     username: 1612352@qq.com
+     password: jj19870301
+     defaultLabel: master
+  stream:
+   kafka:
+    binder:
+#     zk-nodes: 192.168.2.240:2181
+     brokers: 192.168.2.240
+    bus:
+#    enabled: true
+eureka:
+ client:
+  service-url:
+   defaultZone: http://localhost:8888/eureka
+
+ 

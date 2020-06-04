@@ -1,0 +1,91 @@
+server:
+  port: 9999
+spring:
+  application:
+    name: smartent-gateway
+  redis:
+################### redis 单机版 start ##########################
+    host: linux01
+    port: 6379
+    timeout: 3000
+    database: 0
+
+ #   ribbon
+ribbon:
+  http:
+    client:
+      enabled: false  
+  okhttp:
+    enabled: true  
+    
+#网关    
+zuul:
+  host:
+    socket-timeout-millis: 600000
+    connect-timeout-millis: 60000
+  include-debug-header: true
+  ribbon-isolation-strategy: thread       # 提高吞吐量
+  threadPool:
+    useSeparateThreadPools: true
+    threadPoolKeyPrefix: api-gateway
+  debug:
+    request: true
+    parameter: debugRequest
+  retryable: false    #关闭重试
+  sensitive-headers: #/oauth/token需要请求头处理
+  add-host-header: true
+  routes:
+    auth:
+      sensitiveHeaders: Access-Control-Allow-Origin,Access-Control-Allow-Methods
+      path: /api-auth/**
+      service-id: smartent-security
+      strip-prefix: true   
+      custom-sensitive-headers: true  #http://blog.didispace.com/spring-cloud-zuul-cookie-redirect/ zuul授权码跳转问题
+    user:
+      sensitiveHeaders: Access-Control-Allow-Origin,Access-Control-Allow-Methods
+      path: /api-user/**
+      service-id: smartent-provider
+      strip-prefix: true
+      custom-sensitive-headers: true  
+  ssl-hostname-validation-enabled: false
+
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.2.240:8888/eureka/
+    registry-fetch-interval-seconds: 3  
+    instance-info-replication-interval-seconds: 3      
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+    lease-renewal-interval-in-seconds: 5
+    #注册实例文档
+    status-page-url: http://${spring.cloud.client.ip-address}:${server.port}/swagger-ui.html # ${server.port}为该服务的端口号
+#swagger api文档
+swagger:
+  butler:
+    api-docs-path:  v2/api-docs
+    auto-generate-from-zuul-routes: true
+#使用哪种数据源    
+security:
+  oauth2:
+    token:
+      store:
+        type: redis
+
+#权限认证豁免路径
+chujiang:
+  http_urls:  /api-auth/** , /health ,/doc.html,/api-user/users-anon/login ,/user-center/users-anon/login,/document.html,**/v2/api-docs
+  oauth_urls: /api-auth/** , /doc.html ,/api-user/users-anon/login,/user-center/users-anon/login,/document.html,**/v2/api-docs
+#健康监控
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include:
+        - '*'
