@@ -1,0 +1,82 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>cn.chujiang</groupId>
+    <artifactId>mybatisgeneratorproject</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>mybatis-plus-test2</artifactId>
+  
+  <dependencies>
+		<!-- https://mvnrepository.com/artifact/org.mybatis.generator/mybatis-generator-core -->
+		<dependency>
+			<groupId>org.mybatis.generator</groupId>
+			<artifactId>mybatis-generator-core</artifactId>
+			<version>1.3.6</version>
+		</dependency>
+		<!-- 通用 Mapper -->
+		<!-- https://mvnrepository.com/artifact/tk.mybatis/mapper -->
+		<!-- <dependency> <groupId>tk.mybatis</groupId> <artifactId>mapper</artifactId> 
+			<version>4.0.0</version> </dependency> -->
+		<dependency>
+			<groupId>tk.mybatis</groupId>
+			<artifactId>mapper-spring-boot-starter</artifactId>
+			<version>1.1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+		<!-- 如果你只需要用到通用 Mapper 中的插件，可以只引入 mapper-generator -->
+		<!-- 注意，这个包不需要和上面的 mapper 同时引入，mapper 中包含 generator -->
+		<!-- https://mvnrepository.com/artifact/tk.mybatis/mapper-generator -->
+		<!-- <dependency> <groupId>tk.mybatis</groupId> <artifactId>mapper-generator</artifactId> 
+			<version>1.0.0</version> </dependency> -->
+		<!-- <dependency> <groupId>cn.chujiang</groupId> <artifactId>mybatisplugin</artifactId> 
+			<version>0.0.1-SNAPSHOT</version> </dependency> -->
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>1.3.5</version>
+				<dependencies>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>8.0.11</version>
+					</dependency>
+					<dependency>
+						<groupId>tk.mybatis</groupId>
+						<artifactId>mapper</artifactId>
+						<version>4.0.0</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>Generate MyBatis Artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!--允许移动生成的文件 -->
+					<verbose>true</verbose>
+					<!-- 是否覆盖 -->
+					<overwrite>true</overwrite>
+					<!-- 自动生成的配置 -->
+					<configurationFile>${basedir}/src/main/resources/generatorConfig.xml</configurationFile>
+				</configuration>
+			</plugin>
+		</plugins>
+		<!-- <plugins> mybatis generator 自动生成代码插件 <plugin> <groupId>org.mybatis.generator</groupId> 
+			<artifactId>mybatis-generator-maven-plugin</artifactId> <version>1.3.6</version> 
+			<configuration> <configurationFile>${basedir}/src/main/resources/generatorConfig.xml</configurationFile> 
+			<overwrite>true</overwrite> <verbose>true</verbose> </configuration> </plugin> 
+			</plugins> -->
+	</build>
+</project>
